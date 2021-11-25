@@ -40,7 +40,7 @@ export default {
         if (!this.newStarID) {
           this.errors.push('StarID is required')
         }
-        // if there is no errors
+          // if there is no errors
         if (this.errors.length == 0) {
           let student = {name: this.newStudentName, starID: this.newStarID, present: false}
           this.$emit('student-added', student)// emit event to parent component
