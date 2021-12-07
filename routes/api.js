@@ -31,8 +31,14 @@ router.patch('/students/:id',function (req,res,next){
     let studentID=req.params.id
     let updatedStudent=req.body
     Student.update(updatedStudent,{where:{id: studentID}})
-        .then(()=>{
-            return res.send('ok')
+        .then((rowModified)=>{
+
+            let  numberOfRowsModified =rowModified[0]
+
+            if (numberOfRowsModified===1){
+                return res.send('ok')
+            }
+
         })
 })
 
@@ -40,8 +46,13 @@ router.delete('/students/:id',function (req,res,next){
     let studentID=req.params.id
 
     Student.destroy({where:{id: studentID}})
-        .then(()=>{
-            return res.send('ok')
-        })
+        .then((rowsDeleted)=>{
+            if (rowsDeleted===1){
+                return res.send('ok')
+            }else {
+                return res.status(404).json(['Not found'])
+            }
+
+        }).catch(err => next(err))// unexpected errors
 })
 module.exports =router
