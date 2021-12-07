@@ -23,6 +23,12 @@ import StudentTable from './components/StudentTable.vue'
 // import StudentMessage from "@/components/StudentMessage";
 
 export default {
+  data(){
+    return{
+      students:[],
+      mostRecentStudent:{}
+    }
+  },
   name: 'App',
   emits:['student-added'],
   components: {
@@ -31,43 +37,39 @@ export default {
     NewStudentForm,
 
   },
-  data(){
-    return{
-      students:[],
-      mostRecentStudent:{}
-    }
-  },
+mounted() {
+    this.updateStudents()
+    // load all students make request to API
+},
   methods:{
-    newStudentAdded(student){
-      this.students.push(student)
-      this.students.sort(function (s1,s2){
-        return s1.name.toLowerCase()<s2.name.toLowerCase()?-1:1
+    updateStudents(){
+      this.$student_api.getAllStudents().then(students=>{
+        this.students=students
       })
-
+    },
+    newStudentAdded(student){
+    this.$student_api.addStudent(student).then( ()=>{
+      this.updateStudents()
+    }).catch(err =>{
+      let msg =err.response.data.join(',')
+      alert('Error adding student,\n'+msg)
+    })
     },
     studentArrivedOrLeft(student,present){
-      //find student in this.students,set present vale
-      //return undefined in no match
-      let updateStudent=this.students.find(function (s) {
-        if(s.name===student.name&&s.starID===student.starID){
-          return true;
-        }
-      })
-      if(updateStudent){
-        updateStudent.present=present
-        this.mostRecentStudent=student
-      }
+      student.present=present//update present value
+    this.$student_api.updateStudent(student).then(()=>{
+      this.mostRecentStudent=student
+      this.updateStudents()
+    })
+
+
     },
     studentDeleted(student){
-      // filter returns a new array of all students for whom the function return true
-      this.students=this.students.filter(function (s){
-        if (s !=student){
-          return true
-        }
-      })
-
-      // CLEAR welcome /goodbye
+    this.$student_api.deleteStudent(student.id).then( ()=>{
+      this.updateStudents()
       this.mostRecentStudent={}
+    })
+
     }
   }
 }

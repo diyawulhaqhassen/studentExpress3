@@ -52,7 +52,7 @@ export default {
  methods: {
     arrivedOrLeft(student,present){
     this.$emit('student-present',student,present)
-    },studentDeleted(){
+    },studentDeleted(student){
       this.$emit('delete-student',student)// delete student
    }
 }
