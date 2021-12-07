@@ -1,6 +1,6 @@
 let express =require('express')
 let db =require('../models')
-const {where} = require("sequelize");
+//const {where} = require("sequelize");
 let Student =db.Student
 
 let router=express.Router()
@@ -33,12 +33,23 @@ router.patch('/students/:id',function (req,res,next){
     Student.update(updatedStudent,{where:{id: studentID}})
         .then((rowModified)=>{
 
-            let  numberOfRowsModified =rowModified[0]
+            let  numberOfRowsModified =rowModified[0]// number of rows is changed
 
-            if (numberOfRowsModified===1){
+            if (numberOfRowsModified===1){// exactly one row
                 return res.send('ok')
+            }else {
+                return  res.status(404).json(['Student with that id is not found'])
             }
 
+        })
+        .catch(err =>{
+            // if validation error, that's a bad request -modify student id
+            if (err instanceof db.sequelize.ValidationError){
+                let messages =err.errors.map(e=>e.message)
+                return res.status(400).json(messages)
+            }else {
+                return  next(err)
+            }
         })
 })
 
