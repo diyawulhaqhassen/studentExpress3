@@ -9,7 +9,12 @@ module.exports=(sequelize, DataTypes)=> {
         starID:{
             type: DataTypes.STRING,
             allowNull:false,
-            unique:true
+            unique:true,
+            validate:{
+                is:/^[a-z]{2}\d{4}[a-z]{2}$/
+                // regular expression to match the pattern of a star id
+                // to lower case letters a-Z,four digits, to lowercase letters a-z
+            }
         },
         present:{
             type:DataTypes.BOOLEAN,

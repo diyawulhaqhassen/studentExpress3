@@ -45,7 +45,7 @@ mounted() {
     updateStudents(){
       this.$student_api.getAllStudents().then(students=>{
         this.students=students
-      })
+      }).catch( ()=> alert('unable to fetch student list'))
     },
     newStudentAdded(student){
     this.$student_api.addStudent(student).then( ()=>{
@@ -60,7 +60,7 @@ mounted() {
     this.$student_api.updateStudent(student).then(()=>{
       this.mostRecentStudent=student
       this.updateStudents()
-    })
+    }).catch( ()=> alert('unable to update student'))
 
 
     },
@@ -68,7 +68,7 @@ mounted() {
     this.$student_api.deleteStudent(student.id).then( ()=>{
       this.updateStudents()
       this.mostRecentStudent={}
-    })
+    }).catch(()=>alert('unable to delete student'))
 
     }
   }

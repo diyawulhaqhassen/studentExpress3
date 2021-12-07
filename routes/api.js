@@ -1,11 +1,11 @@
 let express =require('express')
 let db =require('../models')
-const {where} = require("sequelize");
+//const {where} = require("sequelize");
 let Student =db.Student
 
 let router=express.Router()
 
-router.get('/Students',function (req,res,next){
+router.get('/students',function (req,res,next){
     Student.findAll({order:['present','name']}).then(students =>{
         return res.json(students)
     }).catch( err => next(err))
@@ -31,8 +31,25 @@ router.patch('/students/:id',function (req,res,next){
     let studentID=req.params.id
     let updatedStudent=req.body
     Student.update(updatedStudent,{where:{id: studentID}})
-        .then(()=>{
-            return res.send('ok')
+        .then((rowModified)=>{
+
+            let  numberOfRowsModified =rowModified[0]// number of rows is changed
+
+            if (numberOfRowsModified===1){// exactly one row
+                return res.send('ok')
+            }else {
+                return  res.status(404).json(['Student with that id is not found'])
+            }
+
+        })
+        .catch(err =>{
+            // if validation error, that's a bad request -modify student id
+            if (err instanceof db.sequelize.ValidationError){
+                let messages =err.errors.map(e=>e.message)
+                return res.status(400).json(messages)
+            }else {
+                return  next(err)
+            }
         })
 })
 
@@ -40,8 +57,13 @@ router.delete('/students/:id',function (req,res,next){
     let studentID=req.params.id
 
     Student.destroy({where:{id: studentID}})
-        .then(()=>{
-            return res.send('ok')
-        })
+        .then((rowsDeleted)=>{
+            if (rowsDeleted===1){
+                return res.send('ok')
+            }else {
+                return res.status(404).json(['Not found'])
+            }
+
+        }).catch(err => next(err))// unexpected errors
 })
 module.exports =router
