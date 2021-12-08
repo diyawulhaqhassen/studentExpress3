@@ -5,7 +5,7 @@ let Student =db.Student
 
 let router=express.Router()
 
-router.get('/Students',function (req,res,next){
+router.get('/students',function (req,res,next){
     Student.findAll({order:['present','name']}).then(students =>{
         return res.json(students)
     }).catch( err => next(err))

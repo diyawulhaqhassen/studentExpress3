@@ -12,7 +12,7 @@ let db={}
 let sequelize
 
 if (config.use_env_variable){
-    sequelize=new sequelize(process.env[config.use_env_variable],config)
+    sequelize=new Sequelize(process.env[config.use_env_variable],config)
 }else {
     // run locally,development mode, use SQLite
 
@@ -23,7 +23,7 @@ let  studentModel =require('./student')(sequelize,DataTypes)
 
 db[studentModel.name] =studentModel
 
-db.sequelize =sequelize  // info on how to connect to the database
+db.Sequelize =Sequelize  // info on how to connect to the database
 db.sequelize =sequelize // reference to sequelize library
 
 module.exports =db
