@@ -1,7 +1,7 @@
 <template>
 <div>
 
-    <div v-show="student.name" ></div>
+    <div v-show="student.name" >
       <div v-if="student.present" class="alert alert-info">
         Welcome, {{student.name}}
       </div>
@@ -9,7 +9,7 @@
         Goodbye, {{student.name}} see you later!
       </div>
   </div>
-
+</div>
 </template>
 
 <script>
